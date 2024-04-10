@@ -17,6 +17,7 @@ with DAG(
     description='Un DAG de ejemplo que utiliza TaskGroup',
     schedule_interval='@daily',
     catchup=False,
+    tags=["MODULO_3"],
 ) as dag:
 
     inicio = DummyOperator(

@@ -3,8 +3,25 @@ from airflow.operators.python_operator import PythonOperator
 from airflow.operators.dummy_operator import DummyOperator
 from datetime import datetime, timedelta
 
+# Definimos las funciones que utilizaremos
+def task_extract(**kwargs):
+    a=10+25
+    print(f"Extrayendo {a} datos...")
+    return a
 
+def task_transform(**kwargs):
+    ti = kwargs['ti']
+    extracted_data = ti.xcom_pull(task_ids='extract')
+    print(f"Transformando datos: {extracted_data}")
+    return 'Datos transformados'
 
+def task_load(**kwargs):
+    ti = kwargs['ti']
+    transformed_data = ti.xcom_pull(task_ids='transform')
+    print(f"Cargando datos: {transformed_data}")
+    return 'Datos cargados'
+
+# Definimos los argumentos
 default_args = {
     'owner': 'Docente',
     'depends_on_past': True,
@@ -12,8 +29,6 @@ default_args = {
     'retries': 2,
     'retry_delay': timedelta(minutes=5)
 }
-
-
 
 # Definimos los detalles del DAG
 with DAG(
@@ -28,23 +43,7 @@ with DAG(
 
 ) as dag:
 
-    # Definimos las tareas utilizando PythonOperator
-    def task_extract(**kwargs):
-        a=10+25
-        print(f"Extrayendo {a} datos...")
-        return a
 
-    def task_transform(**kwargs):
-        ti = kwargs['ti']
-        extracted_data = ti.xcom_pull(task_ids='extract')
-        print(f"Transformando datos: {extracted_data}")
-        return 'Datos transformados'
-
-    def task_load(**kwargs):
-        ti = kwargs['ti']
-        transformed_data = ti.xcom_pull(task_ids='transform')
-        print(f"Cargando datos: {transformed_data}")
-        return 'Datos cargados'
 
     start = DummyOperator(task_id="start")
 

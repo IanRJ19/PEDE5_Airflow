@@ -1,14 +1,19 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 from airflow.operators.empty import EmptyOperator
+from datetime import datetime, timedelta
 
-from datetime import datetime
 
 dag = DAG(dag_id="task_concurrency",
-          start_date=datetime(2023,7,24),
-          schedule="@daily",
-          catchup=False,
-          max_active_tasks=2)
+            start_date=datetime(2023,7,24),
+            schedule="@daily",
+            default_args={
+                'retries': 1,
+                'retry_delay': timedelta(minutes=1),
+                'owner': 'Docente'},
+            catchup=False,
+            max_active_tasks=2,
+            tags=["MODULO_1"])
 
 start = EmptyOperator(dag=dag, task_id="start")
 end = EmptyOperator(dag=dag, task_id="end")

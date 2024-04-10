@@ -16,10 +16,11 @@ default_args = {
 }
 
 with DAG(dag_id='subdags',
-         schedule='@daily',
-         catchup=False,
-         default_args=default_args
-         ) as dag:
+            schedule='@daily',
+            catchup=False,
+            default_args=default_args,
+            tags=["MODULO_3"]
+            ) as dag:
     
     start = EmptyOperator(task_id='start')
     end = EmptyOperator(task_id='end')

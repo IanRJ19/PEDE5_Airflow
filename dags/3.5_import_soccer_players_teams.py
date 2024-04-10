@@ -23,7 +23,7 @@ with DAG(
     default_args=args_defecto,
     description='DAG para importar datos de múltiples equipos de fútbol desde una API a MySQL',
     schedule_interval='@daily',
-    tags=['fútbol', 'api', 'ejemplo2'],
+    tags=["MODULO_3"],
 ) as dag:
 
     def obtener_jugadores_futbol(id_equipo):

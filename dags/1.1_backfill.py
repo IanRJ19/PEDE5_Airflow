@@ -10,10 +10,11 @@ with DAG(
     start_date=datetime(2024, 4, 3),  # Fecha ajustada a cerca de la actual
     catchup=False,  # Desactivamos el catchup para evitar ejecuciones automáticas pasadas
     schedule_interval='@daily', # En formato CRON
-
-    
-    # default_args={'retries': 2, 'retry_delay': timedelta(minutes=5)},  # Argumentos predeterminados para las tareas
-
+    default_args={
+        'retries': 1,
+        'retry_delay': timedelta(minutes=1),
+        'owner': 'Docente'
+    },
     description="Un ejemplo de DAG para demostrar funcionalidades básicas",  # Descripción del DAG
     tags=["MODULO_1"]  # Etiquetas para categorizar el DAG
     # max_active_runs=1,  # Número máximo de ejecuciones activas
@@ -54,4 +55,4 @@ with DAG(
     # Definimos las dependencias del flujo de tareas
     start >> extract >> transform >> load >> end
 
-    #
+    

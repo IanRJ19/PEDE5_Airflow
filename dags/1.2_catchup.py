@@ -8,7 +8,11 @@ with DAG(
     start_date=datetime(2024, 4, 1),  # Fecha ajustada a cerca de la actual
     catchup=True,  # Desactivamos el catchup para evitar ejecuciones automáticas pasadas
     schedule_interval='@daily',
-    # default_args={'retries': 2, 'retry_delay': timedelta(minutes=5)},  # Argumentos predeterminados para las tareas
+    default_args={
+        'retries': 1,
+        'retry_delay': timedelta(minutes=1),
+        'owner': 'Docente'
+    },
     description="Un ejemplo de DAG para demostrar funcionalidades básicas",  # Descripción del DAG
     tags=["MODULO_1"]  
     # max_active_runs=1,  # Número máximo de ejecuciones activas

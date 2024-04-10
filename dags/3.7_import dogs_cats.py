@@ -50,6 +50,7 @@ with DAG(
     description='DAG para importar datos de animales desde APIs a MySQL',
     schedule_interval=timedelta(days=1),
     catchup=False,
+    tags=["MODULO_3"]
 ) as dag:
 
     crear_tabla_perros = MySqlOperator(
