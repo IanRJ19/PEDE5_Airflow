@@ -51,7 +51,7 @@ def filtrar_competencias(df, competencias, categorias):
             mascara_competencias |= df[columna].notna()
     return df[mascara_competencias]
 
-def procesar_dataframe(df, fecha_columna, identificacion_columna):
+def refinar_dataframe(df, fecha_columna, identificacion_columna):
     if fecha_columna in df.columns:
         df[fecha_columna] = df[fecha_columna].fillna(df["Fecha de Ingreso a Proceso (Zona horaria GMT 0)"])
     df = df.sort_values(by=fecha_columna, ascending=False)
@@ -93,7 +93,7 @@ categorias = ["_Valor", "_Esperado", "_Brecha", "_Cumplimiento"]
 
 Base_Total = filtrar_competencias(Base_Total, competencias, categorias)
 
-Base_Total = procesar_dataframe(Base_Total, 'Fecha de Finalización de Proceso (Zona horaria GMT 0)', 'No. Identificación')
+Base_Total = refinar_dataframe(Base_Total, 'Fecha de Finalización de Proceso (Zona horaria GMT 0)', 'No. Identificación')
 
 Base_permanencia = pd.read_excel(os.path.join(ruta, "Base_permanencia.xlsx"))
 Base_Total["No. Identificación"] = Base_Total["No. Identificación"].str.replace(' ', '', regex=True)

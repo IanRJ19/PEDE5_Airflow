@@ -107,12 +107,10 @@ def cargar_datos_mysql(ti, tabla_destino, **kwargs):
 # Argumentos por defecto para el DAG
 default_args = {
     'owner': 'Docente',
-    'start_date': datetime(2023, 1, 1),
+    'start_date': datetime(2024, 4, 10),
     'retries': 1
 }
 
-nombres_archivos = ['Base_1.xlsx', 'Base_2.xlsx']
-ruta = r'dags\Prueba reto'
 
 
 # Definir el DAG principal
@@ -130,7 +128,7 @@ with DAG(
     EXTRAER = PythonOperator(
         task_id='EXTRAER',
         python_callable=leer_archivos,
-        op_kwargs={'ruta_directorio': ruta, 'nombres_archivos': nombres_archivos}
+        op_kwargs={'ruta_directorio': 'dags/Prueba reto', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
     )
 
     with TaskGroup(group_id='TRANSFORMACION') as TRANSFORMACION:
