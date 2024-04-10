@@ -128,14 +128,14 @@ with DAG(
     EXTRAER = PythonOperator(
         task_id='EXTRAER',
         python_callable=leer_archivos,
-        op_kwargs={'ruta_directorio': 'dags/Prueba reto', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
+        op_kwargs={'ruta_directorio': 'dags/bases_info', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
     )
 
     with TaskGroup(group_id='TRANSFORMACION') as TRANSFORMACION:
         procesar = PythonOperator(
             task_id='procesar',
             python_callable=procesar_dataframes,
-            op_kwargs={'nombres_archivos': nombres_archivos}
+            op_kwargs={'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
         )
 
         limpiar = PythonOperator(
@@ -166,7 +166,7 @@ with DAG(
         combinar_ordenar = PythonOperator(
             task_id='combinar_y_ordenar_datos',
             python_callable=combinar_y_ordenar_datos,
-            op_kwargs={'ruta': ruta}
+            op_kwargs={'ruta': 'dags/bases_info'}
         )
 
         procesar >> limpiar >> filtrar >> refinar >> combinar_ordenar

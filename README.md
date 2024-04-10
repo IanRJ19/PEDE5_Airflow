@@ -1,6 +1,5 @@
 # Curso de Apache Airflow 2 - PEDE3
-#### Docente: Alonso Medina Donayre
-##### https://www.linkedin.com/in/alonsomd/
+#### Docente: Ian Rumiche Juarez
 
 Recursos para el curso de Apache Airflow.
 
@@ -12,10 +11,6 @@ Recursos para el curso de Apache Airflow.
 ## Pre-requisitos
 - [Instalar Docker Desktop](https://docs.docker.com/get-docker/)
 - [Instalar Visual Studio Code](https://code.visualstudio.com/download)  
-
-## Videos de referencia para instalar Docker
-- [Instalar Docker en Windows 10](https://www.youtube.com/watch?v=ZO4KWQfUBBc)
-- [Instalar Docker en Windows 11](https://www.youtube.com/watch?v=U8RcrCoL9q4)
 
 ## Instalacion de Apache Airflow
 1. Crea una carpeta llamada **airflow-course** en el directorio de tu preferencia.
