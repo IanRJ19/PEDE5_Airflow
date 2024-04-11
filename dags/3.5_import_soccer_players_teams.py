@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from airflow.utils.task_group import TaskGroup
 from pandas import json_normalize
 
-args_defecto = {
+default_args = {
     'owner': 'airflow',
     'start_date': datetime(2024, 4, 8),
     'retries': 1,
@@ -19,13 +19,12 @@ args_defecto = {
 }
 
 with DAG(
-    'importar_jugadores_futbol_ejemplo2',
-    default_args=args_defecto,
+    dag_id='importar_jugadores_futbol_ejemplo2',
+    default_args=default_args,
     description='DAG para importar datos de múltiples equipos de fútbol desde una API a MySQL',
     schedule_interval='@daily',
     tags=["MODULO_3"],
 ) as dag:
-
     def obtener_jugadores_futbol(id_equipo):
         url = 'https://v3.football.api-sports.io/players/squads'
         params = {'team': id_equipo}

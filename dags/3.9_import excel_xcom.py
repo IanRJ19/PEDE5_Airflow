@@ -11,7 +11,7 @@ from datetime import datetime
 
 # task_instance=ti
 
-def leer_archivos(ti, ruta_directorio, nombres_archivos):
+def leer_archivos(ti, ruta_directorio, nombres_archivos): # TASK_ID='EXTRAER'
     dataframes = []
     dataframes_adicionales = []
     for nombre_archivo in nombres_archivos:
@@ -25,7 +25,7 @@ def leer_archivos(ti, ruta_directorio, nombres_archivos):
     ti.xcom_push(key='dataframes_adicionales', value=dataframes_adicionales)
 
 
-def procesar_dataframes(ti, nombres_archivos):
+def procesar_dataframes(ti, nombres_archivos): # TASK_ID='procesar'
     dataframes = ti.xcom_pull(key='dataframes', task_ids='EXTRAER')
     dataframes_adicionales = ti.xcom_pull(key='dataframes_adicionales', task_ids='EXTRAER')
     dataframes_procesados = []
@@ -41,8 +41,8 @@ def procesar_dataframes(ti, nombres_archivos):
     ti.xcom_push(key='dataframes_procesados', value=pd.concat(dataframes_procesados))
 
 
-def limpiar_nombres_columnas(ti, **kwargs):
-    df = ti.xcom_pull(key='dataframes_procesados', task_ids='procesar_dataframes')
+def limpiar_nombres_columnas(ti, **kwargs): # TASK_ID='limpiar'
+    df = ti.xcom_pull(key='dataframes_procesados', task_ids='procesar')
     nombres_columnas_limpios = []
     for col in df.columns:
         if isinstance(col, tuple):
@@ -58,8 +58,8 @@ def limpiar_nombres_columnas(ti, **kwargs):
     ti.xcom_push(key='dataframes_limpios', value=df)
 
 
-def filtrar_competencias(ti, competencias, categorias, **kwargs):
-    df = ti.xcom_pull(key='dataframes_limpios', task_ids='limpiar_nombres_columnas')
+def filtrar_competencias(ti, competencias, categorias, **kwargs): # TASK_ID='filtrar'
+    df = ti.xcom_pull(key='dataframes_limpios', task_ids='limpiar')
     mascara_competencias = False
     for competencia in competencias:
         for categoria in categorias:
@@ -69,8 +69,8 @@ def filtrar_competencias(ti, competencias, categorias, **kwargs):
     ti.xcom_push(key='dataframes_filtrados', value=df_filtrado)
 
 
-def refinar_dataframe(ti, fecha_columna, identificacion_columna, **kwargs):
-    df = ti.xcom_pull(key='dataframes_filtrados', task_ids='filtrar_competencias')
+def refinar_dataframe(ti, fecha_columna, identificacion_columna, **kwargs): # TASK_ID='refinar'
+    df = ti.xcom_pull(key='dataframes_filtrados', task_ids='filtrar')
     if fecha_columna in df.columns:
         df[fecha_columna] = df[fecha_columna].fillna(df["Fecha de Ingreso a Proceso (Zona horaria GMT 0)"])
     df = df.sort_values(by=fecha_columna, ascending=False)
@@ -81,8 +81,8 @@ def refinar_dataframe(ti, fecha_columna, identificacion_columna, **kwargs):
 
 
 
-def combinar_y_ordenar_datos(ti, ruta):
-    df = ti.xcom_pull(key='dataframes_procesados', task_ids=['TRANSFORMACION.procesar', 'TRANSFORMACION.limpiar', 'TRANSFORMACION.filtrar', 'TRANSFORMACION.procesar_dataframe'])
+def combinar_y_ordenar_datos(ti, ruta): # TASK_ID='combinar_ordenar'
+    df = ti.xcom_pull(key='dataframe_refinado', task_ids='refinar_dataframe')
     base_permanencia = pd.read_excel(os.path.join(ruta, "Base_permanencia.xlsx"))
     df["No. Identificación"] = df["No. Identificación"].str.replace(' ', '', regex=True)
     base_permanencia["No. Identificación"] = base_permanencia["No. Identificación"].str.replace(' ', '', regex=True)
@@ -94,7 +94,7 @@ def combinar_y_ordenar_datos(ti, ruta):
 
 
 def cargar_datos_mysql(ti, tabla_destino, **kwargs):
-    df = ti.xcom_pull(key='df_combinado', task_ids='TRANSFORMACION.combinar_y_ordenar_datos')
+    df = ti.xcom_pull(key='df_combinado', task_ids='TRANSFORMACION.combinar_ordenar')
     ruta_archivo_temporal = '/tmp/datos_temporales.csv'
     df.to_csv(ruta_archivo_temporal, index=False, header=False)
     mysql_hook = MySqlHook(mysql_conn_id='mysql_default', local_infile=True)
@@ -115,7 +115,7 @@ default_args = {
 
 # Definir el DAG principal
 with DAG(
-    dag_id='ETL_XCOM',
+    dag_id='Dag_ETL_xcom',
     default_args=default_args,
     description='Un DAG de ejemplo que utiliza xcoms',
     schedule_interval='@daily',
@@ -123,11 +123,12 @@ with DAG(
     tags=["MODULO_3"],
 ) as dag:
 
-    inicio = DummyOperator(task_id='inicio')
+    inicio = DummyOperator(task_id='inicio') #TAREA 1
 
-    EXTRAER = PythonOperator(
+    EXTRAER = PythonOperator( # TAREA 2
         task_id='EXTRAER',
         python_callable=leer_archivos,
+        provide_context=True,
         op_kwargs={'ruta_directorio': 'dags/reto_bases_info', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
     )
 
@@ -135,17 +136,20 @@ with DAG(
         procesar = PythonOperator(
             task_id='procesar',
             python_callable=procesar_dataframes,
+            provide_context=True,
             op_kwargs={'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
         )
 
         limpiar = PythonOperator(
             task_id='limpiar',
+            provide_context=True,
             python_callable=limpiar_nombres_columnas,
         )
 
         filtrar = PythonOperator(
-            task_id='filtrar_competencias',
+            task_id='filtrar',
             python_callable=filtrar_competencias,
+            provide_context=True,
             op_kwargs={
                 'competencias': ["Calidad del trabajo", "Desarrollo de relaciones", "Escrupulosidad/Minuciosidad",
                                 "Flexibilidad y Adaptabilidad", "Orden y la calidad", "Orientación al Logro",
@@ -155,8 +159,9 @@ with DAG(
         )
 
         refinar = PythonOperator(
-            task_id='procesar_dataframe',
+            task_id='refinar',
             python_callable=refinar_dataframe,
+            provide_context=True,
             op_kwargs={
                 'fecha_columna': 'Fecha de Finalización de Proceso (Zona horaria GMT 0)',
                 'identificacion_columna': 'No. Identificación'
@@ -164,8 +169,9 @@ with DAG(
         )
 
         combinar_ordenar = PythonOperator(
-            task_id='combinar_y_ordenar_datos',
+            task_id='combinar_ordenar',
             python_callable=combinar_y_ordenar_datos,
+            provide_context=True,
             op_kwargs={'ruta': 'dags/reto_bases_info'},
         )
 
@@ -174,6 +180,7 @@ with DAG(
     CARGAR = PythonOperator(
         task_id='CARGAR',
         python_callable=cargar_datos_mysql,
+        provide_context=True,
         op_kwargs={'tabla_destino': 'Base_Consolidada'}
     )
 

@@ -78,10 +78,12 @@ def cargar_datos_mysql(tabla_destino, df):
 
 
 # Uso del código reestructurado
-ruta = r'dags\subdags'
+ruta = r'dags\reto_bases_info'
 nombres_archivos = ['Base_1.xlsx', 'Base_2.xlsx']
 # Leer archivos
 dataframes, dataframes_adicionales = leer_archivos(ruta, nombres_archivos)
+Base_permanencia = pd.read_excel(os.path.join(ruta, "Base_permanencia.xlsx"))
+
 # Procesar los DataFrames leídos
 Base_Total = procesar_dataframes(dataframes, dataframes_adicionales, nombres_archivos)
 Base_Total = limpiar_nombres_columnas(Base_Total)
@@ -95,7 +97,6 @@ Base_Total = filtrar_competencias(Base_Total, competencias, categorias)
 
 Base_Total = refinar_dataframe(Base_Total, 'Fecha de Finalización de Proceso (Zona horaria GMT 0)', 'No. Identificación')
 
-Base_permanencia = pd.read_excel(os.path.join(ruta, "Base_permanencia.xlsx"))
 Base_Total["No. Identificación"] = Base_Total["No. Identificación"].str.replace(' ', '', regex=True)
 
 Base_permanencia["No. Identificación"] = Base_permanencia["No. Identificación"].str.replace(' ', '', regex=True)
@@ -105,5 +106,5 @@ Base_Total = Base_Total.sort_values(by=["Nombre del Proceso", 'Ranking'], ascend
 
 Base_Total.to_excel("Modelo_base_consolidado.xlsx", index=False)
 # Uso de la función
-tabla_destino = 'Base_Consolidada'
-cargar_datos_mysql(tabla_destino, Base_Total)
+#tabla_destino = 'Base_Consolidada'
+#cargar_datos_mysql(tabla_destino, Base_Total)
