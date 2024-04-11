@@ -128,7 +128,7 @@ with DAG(
     EXTRAER = PythonOperator(
         task_id='EXTRAER',
         python_callable=leer_archivos,
-        op_kwargs={'ruta_directorio': 'dags/bases_info', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
+        op_kwargs={'ruta_directorio': 'dags/reto_bases_info', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
     )
 
     with TaskGroup(group_id='TRANSFORMACION') as TRANSFORMACION:
@@ -160,13 +160,13 @@ with DAG(
             op_kwargs={
                 'fecha_columna': 'Fecha de Finalización de Proceso (Zona horaria GMT 0)',
                 'identificacion_columna': 'No. Identificación'
-            }
+            },
         )
 
         combinar_ordenar = PythonOperator(
             task_id='combinar_y_ordenar_datos',
             python_callable=combinar_y_ordenar_datos,
-            op_kwargs={'ruta': 'dags/bases_info'}
+            op_kwargs={'ruta': 'dags/reto_bases_info'},
         )
 
         procesar >> limpiar >> filtrar >> refinar >> combinar_ordenar

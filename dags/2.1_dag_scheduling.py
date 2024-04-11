@@ -40,10 +40,10 @@ with DAG(dag_id="dag_scheduling_complex",
     # Tarea final del DAG
     end = DummyOperator(task_id="end")
 
-    # Programación de tareas de limpieza para ejecutarse una vez al día a medianoche
+    # Tarea de limpieza sin schedule_interval en BashOperator
     cleanup = BashOperator(task_id="cleanup",
-                            bash_command="echo 'Cleaning up...'",
-                            schedule_interval='0 0 * * *')  # Se ejecuta cada día a medianoche
+                        bash_command="echo 'Cleaning up...'")
+
 
     # Definición de dependencias y flujo de tareas
     start >> extract >> transform >> load >> end

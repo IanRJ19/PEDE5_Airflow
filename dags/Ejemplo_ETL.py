@@ -78,7 +78,7 @@ def cargar_datos_mysql(tabla_destino, df):
 
 
 # Uso del código reestructurado
-ruta = r'dags\bases_info'
+ruta = r'dags\subdags'
 nombres_archivos = ['Base_1.xlsx', 'Base_2.xlsx']
 # Leer archivos
 dataframes, dataframes_adicionales = leer_archivos(ruta, nombres_archivos)
