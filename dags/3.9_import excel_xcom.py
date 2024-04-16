@@ -10,6 +10,12 @@ from airflow.providers.mysql.hooks.mysql import MySqlHook
 import logging
 from datetime import datetime
 
+
+# NIVELES LOGGIN:
+# - INFO
+# - WARNING
+# - CRITICAL
+
 # task_instance=ti
 
 def leer_archivos(ti, ruta_directorio, nombres_archivos): # TASK_ID='EXTRAER'

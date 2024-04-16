@@ -20,14 +20,14 @@ default_args = {
     'retry_delay': timedelta(seconds=10)
 }
 
-with DAG(dag_id='trigger_rules',
-         schedule='@daily',
-         catchup=False,
-         default_args=default_args
-         ) as dag:
+with DAG(
+    dag_id='trigger_rules',
+    schedule='@daily',
+    catchup=False,
+    default_args=default_args
+    ) as dag:
     
     start = EmptyOperator(task_id='start')
-    end = EmptyOperator(task_id='end')
 
     downloading_data = BashOperator(
         task_id='downloading_data',
@@ -54,6 +54,9 @@ with DAG(dag_id='trigger_rules',
         bash_command="sleep 3; echo 'The machine learning models have failed.'",
         trigger_rule="all_failed"
     )
+
+    end = EmptyOperator(task_id='end')
+
 
     start >> downloading_data >> processing_models >> [choose, send_notification] >> end
     
