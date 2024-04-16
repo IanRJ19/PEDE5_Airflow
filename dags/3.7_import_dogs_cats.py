@@ -45,7 +45,7 @@ def obtener_y_cargar_datos(api_url, table_name, file_name):
 
 # Definición del DAG
 with DAG(
-    'importar_datos_animales',
+    dag_id='importar_datos_animales',
     default_args=args_defecto,
     description='DAG para importar datos de animales desde APIs a MySQL',
     schedule_interval=timedelta(days=1),

@@ -13,20 +13,23 @@ default_args = {
 }
 
 # Definir el DAG
-with DAG('file_sensor_example',
-         schedule_interval='@daily',
-         default_args=default_args,
-         catchup=False) as dag:
+with DAG(
+    dag_id='file_sensor_example',
+    schedule_interval='@daily',
+    default_args=default_args,
+    catchup=False
+    
+    ) as dag:
     
     # Tarea inicio
     start_task = DummyOperator(task_id='start_task')
 
     # Sensor de archivo
-    file_sensor_task = FileSensor(
-        task_id='file_sensor_task',
+    file_sensor_tarea = FileSensor(
+        task_id='file_sensor_tarea',
         fs_conn_id='my_filesystem',
         filepath='/opt/airflow/dags/archivo_sensor/Modelo_base_consolidado.xlsx',
-        poke_interval=10,  # Tiempo en segundos para la verificación
+        poke_interval=20,  # Tiempo en segundos para la verificación
         timeout=300  # Tiempo máximo de espera en segundos
     )
 
@@ -34,4 +37,4 @@ with DAG('file_sensor_example',
     end_task = DummyOperator(task_id='end_task')
 
     # Definir el orden de las tareas
-    start_task >> file_sensor_task >> end_task
+    start_task >> file_sensor_tarea >> end_task
