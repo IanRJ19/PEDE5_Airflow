@@ -41,7 +41,7 @@ def filtrar_columnas(ti, valor): # TASK_ID='filtrar'
     logging.info(f"Filtrado de columnas realizado")
 
 
-def cargar_datos_mysql(ti):
+def cargar_datos_mysql(ti,tabla_destino):
     archivo_subido = ti.xcom_pull(key='final', task_ids='TRANSFORMACION.filtrar')
 
     engine = create_engine("mysql+pymysql://root:dwh@localhost:3306/dwh")
@@ -49,8 +49,7 @@ def cargar_datos_mysql(ti):
 
     with engine.begin() as connection:
         #base = pd.read_sql_query(f"SELECT * FROM Base_Consolidada", con=connection)
-        archivo_subido.to_sql(name='TABLA_CONSOLIDADA', con=connection, if_exists='append', index=False)
-
+        archivo_subido.to_sql(name=tabla_destino, con=connection, if_exists='append', index=True)
 
 
 
@@ -107,13 +106,13 @@ with DAG(
         task_id='CARGAR',
         python_callable=cargar_datos_mysql,
         provide_context=True,
-        op_kwargs={'tabla_destino': 'Base_Consolidada'}
+        op_kwargs={'tabla_destino': 'BASE_CONSOLIDADA'}
     )
 
 
     FINAL = BashOperator(
         task_id='FINAL',
-        bash_command="sleep 3; echo 'TODAS LAS TRANSFORMACIONES SE EJECUTARÓN CORRECTAMENTE'",
+        bash_command="sleep 3; echo 'TODAS LAS TRANSFORMACIONES Y LA CARGA A MYSQL SE EJECUTARÓN CORRECTAMENTE'",
         trigger_rule="all_success"
     )
 
