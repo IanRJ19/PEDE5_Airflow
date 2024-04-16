@@ -9,7 +9,7 @@ from airflow.sensors.filesystem import FileSensor
 from airflow.operators.bash import BashOperator
 from datetime import datetime,timedelta
 import logging
-
+from sqlalchemy import create_engine
 
 
 # Argumentos por defecto para el DAG
@@ -29,7 +29,7 @@ def leer_archivos(ti, ruta_directorio): # TASK_ID='EXTRAER'
 
 def seleccion_columnas(ti, columnas): # TASK_ID='seleccion'
     dataframe = ti.xcom_pull(key='dataframe', task_ids='EXTRAER')
-    dataframe=dataframe[[columnas]]
+    dataframe=dataframe[columnas]
     ti.xcom_push(key='dataframe', value=dataframe)
     logging.info(f"Selección de columnas realizada")
 
@@ -42,9 +42,15 @@ def filtrar_columnas(ti, valor): # TASK_ID='filtrar'
 
 
 def cargar_datos_mysql(ti):
-    df = ti.xcom_pull(key='final', task_ids='TRANSFORMACION.filtrar')
-    logging.info(f"¡Datos cargados en MySQL con éxito en la tabla !")
-    print(df)
+    archivo_subido = ti.xcom_pull(key='final', task_ids='TRANSFORMACION.filtrar')
+
+    engine = create_engine("mysql+pymysql://root:dwh@localhost:3306/dwh")
+    connection = engine.connect()
+
+    with engine.begin() as connection:
+        #base = pd.read_sql_query(f"SELECT * FROM Base_Consolidada", con=connection)
+        archivo_subido.to_sql(name='TABLA_CONSOLIDADA', con=connection, if_exists='append', index=False)
+
 
 
 
