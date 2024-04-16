@@ -20,33 +20,37 @@ default_args = {
     'execution_timeout': timedelta(seconds=300)
 }
 
-def leer_archivos(ti, ruta_directorio, nombres_archivos): # TASK_ID='EXTRAER'
-    dataframes = []
-    dataframes_adicionales = []
-    for nombre_archivo in nombres_archivos:
-        archivo_completo = os.path.join(ruta_directorio, nombre_archivo)
-        print(f"Procesando {nombre_archivo}")
-        dataframe = pd.read_excel(archivo_completo, skiprows=4, header=[0, 1])
-        dataframe_adicional = pd.read_excel(archivo_completo, nrows=3)
-        dataframes.append(dataframe)
-        dataframes_adicionales.append(dataframe_adicional)
-    ti.xcom_push(key='dataframes', value=dataframes)
-    ti.xcom_push(key='dataframes_adicionales', value=dataframes_adicionales)
+def leer_archivos(ti, ruta_directorio): # TASK_ID='EXTRAER'
+    dataframe=pd.read_excel(ruta_directorio)
+    ti.xcom_push(key='dataframe', value=dataframe)
+    logging.info(f"Archivo leído con éxito")
 
 
-def cargar_datos_mysql(ti, tabla_destino, **kwargs):
-    df = ti.xcom_pull(key='df_combinado', task_ids='TRANSFORMACION.combinar_ordenar')
-    ruta_archivo_temporal = '/tmp/datos_temporales.csv'
-    df.to_csv(ruta_archivo_temporal, index=False, header=False)
-    mysql_hook = MySqlHook(mysql_conn_id='mysql_default', local_infile=True)
-    mysql_hook.bulk_load_custom(tabla_destino, ruta_archivo_temporal, extra_options="FIELDS TERMINATED BY ','")
-    logging.info(f"¡Datos cargados en MySQL con éxito en la tabla {tabla_destino}!")
+
+def seleccion_columnas(ti, columnas): # TASK_ID='seleccion'
+    dataframe = ti.xcom_pull(key='dataframe', task_ids='EXTRAER')
+    dataframe=dataframe[[columnas]]
+    ti.xcom_push(key='dataframe', value=dataframe)
+    logging.info(f"Selección de columnas realizada")
+
+
+def filtrar_columnas(ti, valor): # TASK_ID='filtrar'
+    dataframe = ti.xcom_pull(key='dataframe', task_ids='TRANSFORMACION.seleccion')
+    final=dataframe[dataframe['Resolución de problemas_Valor']>valor]
+    ti.xcom_push(key='final', value=final)
+    logging.info(f"Filtrado de columnas realizado")
+
+
+def cargar_datos_mysql(ti):
+    df = ti.xcom_pull(key='final', task_ids='TRANSFORMACION.filtrar')
+    logging.info(f"¡Datos cargados en MySQL con éxito en la tabla !")
+    print(df)
 
 
 
 # Definir el DAG principal
 with DAG(
-    dag_id='Dag_EJEMPLO_mixto',
+    dag_id='Dag_EJEMPLO_MIXTO',
     default_args=default_args,
     description='Un DAG de ejemplo que combina taskgroup, xcom, sensor, triggerrules',
     schedule_interval='@daily',
@@ -67,55 +71,30 @@ with DAG(
         task_id='EXTRAER',
         python_callable=leer_archivos,
         provide_context=True,
-        op_kwargs={'ruta_directorio': 'dags/reto_bases_info', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
+        op_kwargs={'ruta_directorio': 'dags/archivo_sensor/Modelo_base_consolidado.xlsx'}
     )
 
 
     with TaskGroup(group_id='TRANSFORMACION') as TRANSFORMACION:
-        procesar = PythonOperator(
-            task_id='procesar',
-            python_callable=procesar_dataframes,
-            provide_context=True,
-            op_kwargs={'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
-        )
 
-        limpiar = PythonOperator(
-            task_id='limpiar',
+        seleccion = PythonOperator(
+            task_id='seleccion',
+            python_callable=seleccion_columnas,
             provide_context=True,
-            python_callable=limpiar_nombres_columnas,
+            op_kwargs={
+                'columnas': ['Ranking','No. Identificación','Estado','Ciudad','Género','Calidad del trabajo_Valor','Desarrollo de relaciones_Valor','Escrupulosidad/Minuciosidad_Valor','Flexibilidad y Adaptabilidad_Valor','Orden y la calidad_Valor','Orientación al Logro_Valor','Pensamiento Analítico_Valor','Resolución de problemas_Valor','Tesón y disciplina_Valor','Trabajo en equipo_Valor']
+            }
         )
 
         filtrar = PythonOperator(
             task_id='filtrar',
-            python_callable=filtrar_competencias,
+            python_callable=filtrar_columnas,
             provide_context=True,
-            op_kwargs={
-                'competencias': ["Calidad del trabajo", "Desarrollo de relaciones", "Escrupulosidad/Minuciosidad",
-                                "Flexibilidad y Adaptabilidad", "Orden y la calidad", "Orientación al Logro",
-                                "Pensamiento Analítico", "Resolución de problemas", "Tesón y disciplina", "Trabajo en equipo"],
-                'categorias': ["_Valor", "_Esperado", "_Brecha", "_Cumplimiento"]
-            }
+            op_kwargs={'valor': 5.0}
         )
 
-        refinar = PythonOperator(
-            task_id='refinar',
-            python_callable=refinar_dataframe,
-            provide_context=True,
-            op_kwargs={
-                'fecha_columna': 'Fecha de Finalización de Proceso (Zona horaria GMT 0)',
-                'identificacion_columna': 'No. Identificación'
-            },
-        )
-
-        combinar_ordenar = PythonOperator(
-            task_id='combinar_ordenar',
-            python_callable=combinar_y_ordenar_datos,
-            provide_context=True,
-            op_kwargs={'ruta': 'dags/reto_bases_info'},
-        )
-
-
-        procesar >> limpiar >> filtrar >> refinar >> combinar_ordenar
+  
+        seleccion>> filtrar 
 
 
     CARGAR = PythonOperator(
@@ -131,3 +110,5 @@ with DAG(
         bash_command="sleep 3; echo 'TODAS LAS TRANSFORMACIONES SE EJECUTARÓN CORRECTAMENTE'",
         trigger_rule="all_success"
     )
+
+    INICIO >> EXTRAER >> TRANSFORMACION >> CARGAR >> FINAL
