@@ -4,6 +4,7 @@ import re
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python_operator import PythonOperator
+from airflow.providers.mysql.operators.mysql import MySqlOperator
 from airflow.utils.task_group import TaskGroup
 from airflow.providers.mysql.hooks.mysql import MySqlHook
 import logging
@@ -38,11 +39,14 @@ def procesar_dataframes(ti, nombres_archivos): # TASK_ID='procesar'
         dataframe['RECORD_SOURCE'] = nombres_archivos[i]
         dataframe['LOAD_DATE'] = datetime.now().strftime("%Y-%m-%d %H:%M")
         dataframes_procesados.append(dataframe)
-    ti.xcom_push(key='dataframes_procesados', value=pd.concat(dataframes_procesados))
+    dataframes_procesados=pd.concat(dataframes_procesados)
+    print(dataframes_procesados.shape)
+    ti.xcom_push(key='dataframes_procesados', value=dataframes_procesados)
 
 
 def limpiar_nombres_columnas(ti, **kwargs): # TASK_ID='limpiar'
-    df = ti.xcom_pull(key='dataframes_procesados', task_ids='procesar')
+    df = ti.xcom_pull(key='dataframes_procesados', task_ids='TRANSFORMACION.procesar')
+    print(df.shape)
     nombres_columnas_limpios = []
     for col in df.columns:
         if isinstance(col, tuple):
@@ -55,11 +59,12 @@ def limpiar_nombres_columnas(ti, **kwargs): # TASK_ID='limpiar'
         nombres_columnas_limpios.append(new_col)
     df.columns = nombres_columnas_limpios
     df.columns = df.columns.str.replace('\n', ' ').str.strip()
+    print(df.shape)
     ti.xcom_push(key='dataframes_limpios', value=df)
 
 
 def filtrar_competencias(ti, competencias, categorias, **kwargs): # TASK_ID='filtrar'
-    df = ti.xcom_pull(key='dataframes_limpios', task_ids='limpiar')
+    df = ti.xcom_pull(key='dataframes_limpios', task_ids='TRANSFORMACION.limpiar')
     mascara_competencias = False
     for competencia in competencias:
         for categoria in categorias:
@@ -70,19 +75,19 @@ def filtrar_competencias(ti, competencias, categorias, **kwargs): # TASK_ID='fil
 
 
 def refinar_dataframe(ti, fecha_columna, identificacion_columna, **kwargs): # TASK_ID='refinar'
-    df = ti.xcom_pull(key='dataframes_filtrados', task_ids='filtrar')
+    df = ti.xcom_pull(key='dataframes_filtrados', task_ids='TRANSFORMACION.filtrar')
     if fecha_columna in df.columns:
         df[fecha_columna] = df[fecha_columna].fillna(df["Fecha de Ingreso a Proceso (Zona horaria GMT 0)"])
     df = df.sort_values(by=fecha_columna, ascending=False)
     df = df.drop_duplicates(subset=identificacion_columna, keep='first')
     df['PROCESS_DATA'] = datetime.now().strftime("%Y-%m-%d %H:%M")
-    df['CREATION_USER'] = os.getlogin()
+    df['CREATION_USER'] = 'IanRJ'
     ti.xcom_push(key='dataframe_refinado', value=df)
 
 
 
 def combinar_y_ordenar_datos(ti, ruta): # TASK_ID='combinar_ordenar'
-    df = ti.xcom_pull(key='dataframe_refinado', task_ids='refinar_dataframe')
+    df = ti.xcom_pull(key='dataframe_refinado', task_ids='TRANSFORMACION.refinar')
     base_permanencia = pd.read_excel(os.path.join(ruta, "Base_permanencia.xlsx"))
     df["No. Identificación"] = df["No. Identificación"].str.replace(' ', '', regex=True)
     base_permanencia["No. Identificación"] = base_permanencia["No. Identificación"].str.replace(' ', '', regex=True)
@@ -123,9 +128,9 @@ with DAG(
     tags=["MODULO_3"],
 ) as dag:
 
-    inicio = DummyOperator(task_id='inicio') #TAREA 1
+    inicio = DummyOperator(task_id='inicio') 
 
-    EXTRAER = PythonOperator( # TAREA 2
+    EXTRAER = PythonOperator( 
         task_id='EXTRAER',
         python_callable=leer_archivos,
         provide_context=True,
@@ -177,6 +182,33 @@ with DAG(
 
         procesar >> limpiar >> filtrar >> refinar >> combinar_ordenar
 
+
+
+    CREAR_TABLA_BD = MySqlOperator(
+        task_id='CREAR_TABLA_BD',
+        mysql_conn_id='mysql_default',
+        sql="""
+            CREATE TABLE IF NOT EXISTS Base_Consolidada (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            dato1 TEXT,
+            dato2 TEXT,
+            dato3 TEXT,
+            dato4 TEXT,
+            dato5 TEXT,
+            dato6 TEXT,
+            dato7 TEXT,
+            dato8 TEXT,
+            dato9 TEXT,
+            dato10 TEXT,
+            dato11 TEXT,
+            dato12 TEXT,
+            dato13 TEXT,
+            dato14 TEXT
+            );
+            """
+    )
+
+
     CARGAR = PythonOperator(
         task_id='CARGAR',
         python_callable=cargar_datos_mysql,
@@ -186,4 +218,4 @@ with DAG(
 
     final = DummyOperator(task_id='final')
 
-    inicio >> EXTRAER >> TRANSFORMACION >> CARGAR >> final
+    inicio >> EXTRAER >> TRANSFORMACION >> CREAR_TABLA_BD>> CARGAR >> final

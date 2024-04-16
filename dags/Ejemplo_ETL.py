@@ -57,23 +57,14 @@ def refinar_dataframe(df, fecha_columna, identificacion_columna):
     df = df.sort_values(by=fecha_columna, ascending=False)
     df = df.drop_duplicates(subset=identificacion_columna, keep='first')
     df['PROCESS_DATA'] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    df['CREATION_USER'] = os.getlogin()
+    df['CREATION_USER'] = 'IanRJ'
     return df
 
 def cargar_datos_mysql(tabla_destino, df):
-    # Suponiendo que df es tu DataFrame final a cargar, por ejemplo, Base_Total
     ruta_archivo_temporal = '/tmp/datos_temporales.csv'
-    
-    # Guardar el DataFrame en un archivo CSV
     df.to_csv(ruta_archivo_temporal, index=False, header=False)
-    
-    # Crear una instancia de MySqlHook
     mysql_hook = MySqlHook(mysql_conn_id='mysql_default', local_infile=True)
-    
-    # Cargar los datos en la base de datos MySQL
     mysql_hook.bulk_load_custom(tabla_destino, ruta_archivo_temporal, extra_options="FIELDS TERMINATED BY ','")
-    
-    logging.info(f"¡Datos cargados en MySQL con éxito en la tabla {tabla_destino}!")
 
 
 
