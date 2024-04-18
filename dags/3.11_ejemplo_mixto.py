@@ -26,7 +26,6 @@ def leer_archivos(ti, ruta_directorio): # TASK_ID='EXTRAER'
     logging.info(f"Archivo leído con éxito")
 
 
-
 def seleccion_columnas(ti, columnas): # TASK_ID='seleccion'
     dataframe = ti.xcom_pull(key='dataframe', task_ids='EXTRAER')
     dataframe=dataframe[columnas]

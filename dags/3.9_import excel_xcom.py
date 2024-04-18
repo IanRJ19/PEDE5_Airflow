@@ -46,13 +46,11 @@ def procesar_dataframes(ti, nombres_archivos): # TASK_ID='procesar'
         dataframe['LOAD_DATE'] = datetime.now().strftime("%Y-%m-%d %H:%M")
         dataframes_procesados.append(dataframe)
     dataframes_procesados=pd.concat(dataframes_procesados)
-    print(dataframes_procesados.shape)
     ti.xcom_push(key='dataframes_procesados', value=dataframes_procesados)
 
 
 def limpiar_nombres_columnas(ti, **kwargs): # TASK_ID='limpiar'
     df = ti.xcom_pull(key='dataframes_procesados', task_ids='TRANSFORMACION.procesar')
-    print(df.shape)
     nombres_columnas_limpios = []
     for col in df.columns:
         if isinstance(col, tuple):
@@ -65,7 +63,6 @@ def limpiar_nombres_columnas(ti, **kwargs): # TASK_ID='limpiar'
         nombres_columnas_limpios.append(new_col)
     df.columns = nombres_columnas_limpios
     df.columns = df.columns.str.replace('\n', ' ').str.strip()
-    print(df.shape)
     ti.xcom_push(key='dataframes_limpios', value=df)
 
 
