@@ -24,7 +24,7 @@ Link: [Repositorio_Creado](https://github.com/IanRJ19/PEDE3_Airflow.git)
 
 
 ```mermaid
-graph TD;
+graph LR;
     INICIO --> EXTRAER;
     EXTRAER --> TRANSFORMACION;
     TRANSFORMACION --> CARGAR;
