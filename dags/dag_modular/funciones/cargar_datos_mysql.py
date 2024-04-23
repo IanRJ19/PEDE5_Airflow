@@ -1,3 +1,5 @@
+from sqlalchemy import create_engine
+
 def cargar_datos_mysql(ti,tabla_destino):
     archivo_subido = ti.xcom_pull(key='final', task_ids='TRANSFORMACION.filtrar')
 

@@ -12,6 +12,20 @@ import logging
 from sqlalchemy import create_engine
 
 
+
+# IMPORTANDO FUNCIONES
+from dags.dag_modular.funciones.cargar_datos_mysql import cargar_datos_mysql
+from dags.dag_modular.funciones.filtrar_columnas import filtrar_columnas
+from dags.dag_modular.funciones.leer_archivos import leer_archivos
+from dags.dag_modular.funciones.seleccion_columnas import seleccion_columnas
+
+
+# IMPORTANDO CONFIGURACIONES
+
+
+
+
+
 # Argumentos por defecto para el DAG
 default_args = {
     'owner': 'Docente',

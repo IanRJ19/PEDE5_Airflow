@@ -1,3 +1,5 @@
+import logging
+
 def seleccion_columnas(ti, columnas): # TASK_ID='seleccion'
     dataframe = ti.xcom_pull(key='dataframe', task_ids='EXTRAER')
     dataframe=dataframe[columnas]
