@@ -13,14 +13,14 @@ from sqlalchemy import create_engine
 
 # IMPORTANDO FUNCIONES GENERALES
 #from dags.dag_modular.general.general_funciones import get_sql
-from dags.dag_modular.general.general_funciones import get_config
-from dags.dag_modular.general.general_funciones import get_md
+from dag_modular.general.general_funciones import get_config
+from dag_modular.general.general_funciones import get_md
 
 # IMPORTANDO FUNCIONES
-from dags.dag_modular.funciones.cargar_datos_mysql import cargar_datos_mysql
-from dags.dag_modular.funciones.filtrar_columnas import filtrar_columnas
-from dags.dag_modular.funciones.leer_archivos import leer_archivos
-from dags.dag_modular.funciones.seleccion_columnas import seleccion_columnas
+from dag_modular.funciones.cargar_datos_mysql import cargar_datos_mysql
+from dag_modular.funciones.filtrar_columnas import filtrar_columnas
+from dag_modular.funciones.leer_archivos import leer_archivos
+from dag_modular.funciones.seleccion_columnas import seleccion_columnas
 
 # IMPORTANDO CONFIGURACIONES
 config_cargar = get_config('config_cargar.yaml')
