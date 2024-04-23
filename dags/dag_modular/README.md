@@ -3,8 +3,8 @@
 ---
 - **Autor**: Docente
 - **Creación**: `{date 2024-04-22}`
-- **Owner/Requester**: {X.X@mail.com}, {Team}, {position}
-- **Last reviewed date**: `{date yyyy-mm-dd}`
+- **Owner/Requester**: {ianrj19@gmail.com}
+- **Last reviewed date**: {date 2024-04-22}`
 
 
 Link: [Repositorio_Creado](https://github.com/IanRJ19/PEDE3_Airflow.git)
