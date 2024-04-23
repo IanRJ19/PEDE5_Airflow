@@ -20,6 +20,18 @@ Link: [Repositorio_Creado](https://github.com/IanRJ19/PEDE3_Airflow.git)
 
 
 
+### DAG Realizado
+
+
+```mermaid
+graph LR
+INICIO[Circle] --> EXTRAER((Circle))
+EXTRAER --> TRANSFORMACION(Circle)
+TRANSFORMACION --> CARGAR{Circle}
+CARGAR --> FINAL
+
+
+
 
  ### Purpose:
 {One or two paragraphs explaining what you are doing with the data and why you need it.}
