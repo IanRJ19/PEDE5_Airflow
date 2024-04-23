@@ -35,6 +35,8 @@ general_config = get_config( 'general_config.yaml')
 default_args = get_config( 'general_config.yaml')['default_args']['dev']
 dag_caracteristicas= get_config( 'general_config.yaml')['dag_caracteristicas']['dev']
 
+
+
 # IMPORTANDO MARKDOWN
 doc_md = get_md( 'README.md')
 

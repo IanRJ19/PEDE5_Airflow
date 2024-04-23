@@ -1,7 +1,7 @@
 import os
 import yaml
 from os import path
-from airflow import DAG
+#from airflow import DAG
 
 def yaml_to_dict(config_filename):
     """

@@ -11,7 +11,7 @@ default_args = {
 }
 
 dag = DAG(
-    'hello_airflow',
+    dag_id='ejemplo_unittest',
     default_args=default_args,
     schedule_interval='@daily'
 )
