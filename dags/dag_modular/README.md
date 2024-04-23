@@ -24,21 +24,20 @@ Link: [Repositorio_Creado](https://github.com/IanRJ19/PEDE3_Airflow.git)
 
 
 ```mermaid
-graph TD;
-    style INICIO circle
-    style EXTRAER circle
-    style TRANSFORMACION circle
-    style CARGAR circle
-    style FINAL circle
-    
-    INICIO -->|Linea recta| EXTRAER;
-    EXTRAER -->|Linea recta| TRANSFORMACION;
-    TRANSFORMACION -->|Linea recta| CARGAR;
-    CARGAR -->|Linea recta| FINAL;
-
+graph LR;
+    INICIO --> EXTRAER;
+    EXTRAER --> TRANSFORMACION;
+    TRANSFORMACION --> CARGAR;
+    CARGAR --> FINAL;
 ```
 
-
+```mermaid
+graph LR
+A[Square Rect] -- Link text --> B((Circle))
+A --> C(Round Rect)
+B --> D{Rhombus}
+C --> D
+```
 
 
 
