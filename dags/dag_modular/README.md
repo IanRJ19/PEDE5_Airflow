@@ -10,6 +10,17 @@
 Link: [Repositorio_Creado](https://github.com/IanRJ19/PEDE3_Airflow.git)
 
 
+
+### Parametros utilizados
+
+|                |DESARROLLO                          |PRODUCCION                         |STAGGIN                         |
+|----------------|-------------------------------|-----------------------------|-----------------------------|
+|Owner |`'Desarrollador'`            |`'Docente'`         |`'Inspector'`            |
+|Retries          |`5`            |`1`             |`1`            |
+
+
+
+
  ### Purpose:
 {One or two paragraphs explaining what you are doing with the data and why you need it.}
  
