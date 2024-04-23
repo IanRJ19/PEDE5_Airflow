@@ -1,6 +1,6 @@
 import os
 import yaml
-
+from airflow import DAG
 from os import path
 
 def yaml_to_dict(dag_file_name=None, config_filename=None):

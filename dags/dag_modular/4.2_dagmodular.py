@@ -10,8 +10,14 @@ from airflow.operators.bash import BashOperator
 from datetime import datetime,timedelta
 import logging
 from sqlalchemy import create_engine
+import os
 
 
+# IMPORTANDO FUNCIONES GENERALES
+from dags.dag_modular.general.general_funciones import yaml_to_dict
+from dags.dag_modular.general.general_funciones import get_config
+from dags.dag_modular.general.general_funciones import get_sql
+from dags.dag_modular.general.general_funciones import get_md
 
 # IMPORTANDO FUNCIONES
 from dags.dag_modular.funciones.cargar_datos_mysql import cargar_datos_mysql
@@ -21,26 +27,32 @@ from dags.dag_modular.funciones.seleccion_columnas import seleccion_columnas
 
 
 # IMPORTANDO CONFIGURACIONES
+config_cargar = get_config(dag_file_name = dag_modular, config_filename = 'config_cargar.yaml')
+config_extraer = get_config(dag_file_name = dag_modular, config_filename = 'config_extraer.yaml')
+config_filtrar = get_config(dag_file_name = dag_modular, config_filename = 'config_filtrar.yaml')
+config_final = get_config(dag_file_name = dag_modular, config_filename = 'config_final.yaml')
+config_inicio = get_config(dag_file_name = dag_modular, config_filename = 'config_inicio.yaml')
+config_seleccion = get_config(dag_file_name = dag_modular, config_filename = 'config_seleccion.yaml')
+general_config = get_config(dag_file_name = dag_modular, config_filename = 'general_config.yaml')
 
 
+# Declare configuration variables
+dag_file_name = os.path.basename(__file__).split('.')[0]
+env=os.getenv('ENVIRONMENT')
+default_arguments = dag_config['default_args'][env]
 
+# Getting variables of pipeline configs
+endpoint = pipeline_config['endpoint']
+soccer_teams_ids = pipeline_config['soccer_teams_ids']
 
+#Airflow docstring
+doc_md = get_md(dag_file_name, 'README.md')
 
-# Argumentos por defecto para el DAG
-default_args = {
-    'owner': 'Docente',
-    'start_date': datetime(2024, 4, 15),
-    'retries': 1,
-    'execution_timeout': timedelta(seconds=300)
-}
 
 # Definir el DAG principal
 with DAG(
-    dag_id='Dag_modular_mixto',
-    default_args=default_args,
-    description='Un DAG de ejemplo que combina taskgroup, xcom, sensor, triggerrules y separación de forma modular',
-    schedule_interval='@daily',
-    catchup=False,
+    dag_id='dag_modular',
+    default_args=general_config,
     tags=["MODULO_4"],
 ) as dag:
 
@@ -48,18 +60,13 @@ with DAG(
     INICIO = FileSensor(
         task_id='INICIO',
         fs_conn_id='my_filesystem',
-        filepath='/opt/airflow/dags/archivo_sensor/Modelo_base_consolidado.xlsx',
-        poke_interval=20,  # Tiempo en segundos para la verificación
-        timeout=200  # Tiempo máximo de espera en segundos
     )
 
     EXTRAER = PythonOperator( 
         task_id='EXTRAER',
         python_callable=leer_archivos,
         provide_context=True,
-        op_kwargs={'ruta_directorio': 'dags/archivo_sensor/Modelo_base_consolidado.xlsx'}
     )
-
 
     with TaskGroup(group_id='TRANSFORMACION') as TRANSFORMACION:
 
@@ -67,19 +74,14 @@ with DAG(
             task_id='seleccion',
             python_callable=seleccion_columnas,
             provide_context=True,
-            op_kwargs={
-                'columnas': ['Ranking','No. Identificación','Estado','Ciudad','Género','Calidad del trabajo_Valor','Desarrollo de relaciones_Valor','Escrupulosidad/Minuciosidad_Valor','Flexibilidad y Adaptabilidad_Valor','Orden y la calidad_Valor','Orientación al Logro_Valor','Pensamiento Analítico_Valor','Resolución de problemas_Valor','Tesón y disciplina_Valor','Trabajo en equipo_Valor']
-            }
         )
 
         filtrar = PythonOperator(
             task_id='filtrar',
             python_callable=filtrar_columnas,
             provide_context=True,
-            op_kwargs={'valor': 5.0}
+            
         )
-
-  
         seleccion>> filtrar 
 
 
@@ -87,14 +89,11 @@ with DAG(
         task_id='CARGAR',
         python_callable=cargar_datos_mysql,
         provide_context=True,
-        op_kwargs={'tabla_destino': 'BASE_CONSOLIDADA'}
+        
     )
-
 
     FINAL = BashOperator(
         task_id='FINAL',
-        bash_command="sleep 3; echo 'TODAS LAS TRANSFORMACIONES Y LA CARGA A MYSQL SE EJECUTARÓN CORRECTAMENTE'",
-        trigger_rule="all_success"
     )
 
     INICIO >> EXTRAER >> TRANSFORMACION >> CARGAR >> FINAL

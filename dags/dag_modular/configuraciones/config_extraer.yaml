@@ -1,0 +1,2 @@
+EXTRAER: 
+  op_kwargs={'ruta_directorio': 'dags/archivo_sensor/Modelo_base_consolidado.xlsx'}

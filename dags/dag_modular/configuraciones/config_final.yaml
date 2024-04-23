@@ -1,0 +1,3 @@
+FINAL:
+  bash_command: "sleep 3; echo 'TODAS LAS TRANSFORMACIONES Y LA CARGA A MYSQL SE EJECUTARÓN CORRECTAMENTE'"
+  trigger_rule: "all_success"
