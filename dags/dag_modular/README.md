@@ -23,11 +23,13 @@ Link: [Repositorio_Creado](https://github.com/IanRJ19/PEDE3_Airflow.git)
 ### DAG Realizado
 
 
+```mermaid
 graph TD;
     INICIO --> EXTRAER;
     EXTRAER --> TRANSFORMACION;
     TRANSFORMACION --> CARGAR;
     CARGAR --> FINAL;
+```
 
 
 
