@@ -1,2 +1,2 @@
-CARGAR:
-  op_kwargs: {'tabla_destino': 'BASE_CONSOLIDADA'}
+op_kwargs: 
+  tabla_destino: 'BASE_CONSOLIDADA'
