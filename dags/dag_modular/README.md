@@ -35,10 +35,7 @@ graph TD;
 
 
 
-
-
-
- ### Purpose:
+### Purpose:
 {One or two paragraphs explaining what you are doing with the data and why you need it.}
  
 - **Business**: {TEXT eg: More revenue ...}
