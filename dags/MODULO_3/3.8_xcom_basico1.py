@@ -20,7 +20,7 @@ def recibir_valor_siguiente(ti):
 
 
 
-with DAG('xcom_basico',
+with DAG('xcom_basico1',
          start_date=datetime(2024, 4, 10),
          schedule_interval='@daily',
          catchup=False) as dag:

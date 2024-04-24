@@ -18,7 +18,7 @@ default_args = {
     'retry_delay': timedelta(seconds=30)
 }
 
-with DAG(dag_id='xcom',
+with DAG(dag_id='xcom_basico2',
          schedule='@daily',
          catchup=False,
          default_args=default_args

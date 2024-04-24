@@ -96,6 +96,3 @@ Base_Total = pd.merge(Base_Total, Base_permanencia, how='inner', on='No. Identif
 Base_Total = Base_Total.sort_values(by=["Nombre del Proceso", 'Ranking'], ascending=True)
 
 Base_Total.to_excel("Modelo_base_consolidado.xlsx", index=False)
-# Uso de la función
-#tabla_destino = 'Base_Consolidada'
-#cargar_datos_mysql(tabla_destino, Base_Total)
