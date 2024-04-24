@@ -5,14 +5,16 @@ from datetime import datetime, timedelta
 import requests
 
 def fetch_data():
-    response = requests.get("https://api.example.com/data")
+    # Cambio a una URL de una API pública real
+    response = requests.get("https://jsonplaceholder.typicode.com/posts")
     if response.status_code != 200:
-        raise Exception("API request failed")
+        raise Exception("API request failed with status code: {}".format(response.status_code))
     return response.json()
 
 def process_data(ti):
     raw_data = ti.xcom_pull(task_ids='fetch_data')
-    processed_data = [process_record(record) for record in raw_data]
+    # Asumimos que cada "record" es un diccionario y queremos procesar algunos campos
+    processed_data = [{'id': record['id'], 'title': record['title']} for record in raw_data]
     return processed_data
 
 def load_data(ti):
@@ -23,7 +25,8 @@ default_args = {
     'owner': 'Docente',
     'start_date': datetime(2022, 1, 1),
     'retry_delay': timedelta(minutes=5),
-    'retries': 2
+    'retries': 2,
+    'catchup': False  # Asegurando que no se ejecuten DAGs pasados si el start_date es anterior a la fecha actual
 }
 
 dag = DAG(
