@@ -24,7 +24,5 @@ class TestMyDag(unittest.TestCase):
         ti.run(ignore_ti_state=True)
         self.assertEqual(ti.xcom_pull(task_ids='fetch_data'), [{"id": 1, "value": "data"}])
 
-    # Puedes agregar más pruebas para `process_data` y `load_data`, incluyendo manejo de errores
-
 if __name__ == '__main__':
     unittest.main()

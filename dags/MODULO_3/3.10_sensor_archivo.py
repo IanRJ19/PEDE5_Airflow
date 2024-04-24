@@ -28,7 +28,7 @@ with DAG(
     file_sensor_tarea = FileSensor(
         task_id='file_sensor_tarea',
         fs_conn_id='my_filesystem',
-        filepath='/opt/airflow/dags/archivo_sensor/Modelo_base_consolidado.xlsx',
+        filepath='/opt/airflow/dags/MODULO_3/archivo_sensor/Modelo_base_consolidado.xlsx',
         poke_interval=20,  # Tiempo en segundos para la verificación
         timeout=300  # Tiempo máximo de espera en segundos
     )
