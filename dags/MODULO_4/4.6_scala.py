@@ -26,7 +26,7 @@ dag = DAG(
 # Tarea para ejecutar el script de Scala
 run_scala_script = BashOperator(
     task_id='run_scala_script',
-    bash_command='spark-submit --class MainClass --master local[4] /path/to/your/scala_script.jar ',
+    bash_command='spark-submit --class MainClass --master local[4] /opt/airflow/dags/MODULO_4/scala_script.jar ',
     dag=dag,
 )
 
