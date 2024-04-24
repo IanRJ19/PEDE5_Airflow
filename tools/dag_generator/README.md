@@ -1,9 +1,12 @@
-## Purpose
-- This utility allows you to generate a dag with the right structure according to DataOps standards when developing new data pipelines.
+## Propósito
 
-## How to use it?
-- Run the `main.py` file
-- Enter an appropiate dag name according to standards: https://offerup.atlassian.net/wiki/spaces/DTOPS/pages/2567143467/Airflow+DAG+Standards
+- Esta utilidad te permite generar un DAG con la estructura adecuada según los estándares de DataOps al desarrollar nuevas canalizaciones de datos.
 
-## Requirements
+## ¿Cómo usarlo?
+
+- Ejecuta el archivo `main.py`.
+- Ingresa un nombre de DAG apropiado 
+
+## Requisitos
+
 - Python 3
