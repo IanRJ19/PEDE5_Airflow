@@ -7,7 +7,7 @@ from airflow.utils.task_group import TaskGroup
 from airflow.providers.mysql.hooks.mysql import MySqlHook
 from airflow.sensors.filesystem import FileSensor
 from airflow.operators.bash import BashOperator
-from datetime import datetime,timedelta
+from datetime import datetime,timedelta,timezone
 from sqlalchemy import create_engine
 
 
@@ -37,6 +37,7 @@ dag_caracteristicas= get_config( 'general_config.yaml')['dag_caracteristicas']['
 
 
 
+
 # IMPORTANDO MARKDOWN
 doc_md = get_md( 'README.md')
 
@@ -47,7 +48,7 @@ with DAG(
     default_args=default_args,
     tags=["MODULO_4"],
     schedule_interval= dag_caracteristicas['schedule_interval'],
-    start_date= dag_caracteristicas['start_date'],
+    start_date= datetime.strptime(dag_caracteristicas['start_date'], '%Y-%m-%d'),
     max_active_runs= dag_caracteristicas['max_active_runs'],
     catchup=dag_caracteristicas['catchup'],
     max_active_tasks= dag_caracteristicas['max_active_tasks']   ,

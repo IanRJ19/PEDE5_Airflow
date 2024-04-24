@@ -1,19 +1,18 @@
 default_args:
   prod:
     owner: 'Docente'
-    start_date: 'datetime(2024, 4, 30)'
+    start_date: '2024-04-30'
     retries: 1
     execution_timeout: timedelta(seconds=500)
-
   staging:    
     owner: 'Inspector'
-    start_date: 'datetime(2024, 4, 22)'
+    start_date: '2024-04-22'
     retries: 1
     execution_timeout: 'timedelta(seconds=300)'
 
   dev:
     owner: 'Desarrollador'
-    start_date: 'datetime(2024, 4, 22)'
+    start_date: '2024-04-22'
     retries: 5
     execution_timeout: 'timedelta(seconds=150)'
 
