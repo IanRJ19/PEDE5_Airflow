@@ -5,7 +5,7 @@ from datetime import datetime
 
 # Definir los argumentos predeterminados del DAG
 default_args = {
-    'owner': 'airflow',
+    'owner': 'Docente',
     'start_date': datetime(2024, 4, 15),
     'email_on_failure': False,
     'email_on_retry': False,
@@ -14,7 +14,7 @@ default_args = {
 
 # Definir el DAG
 with DAG(
-    dag_id='file_sensor_example',
+    dag_id='sensor_archivo',
     schedule_interval='@daily',
     default_args=default_args,
     catchup=False

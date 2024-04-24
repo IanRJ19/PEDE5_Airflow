@@ -8,7 +8,7 @@ def get_s3_hook():
     return S3Hook(aws_conn_id='my_minio_conn', region_name='us-east-1')
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'Docente',
     'depends_on_past': False,
     'start_date': datetime(2023, 1, 1),
     'email_on_failure': False,

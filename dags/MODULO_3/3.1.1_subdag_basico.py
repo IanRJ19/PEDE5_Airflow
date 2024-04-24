@@ -37,7 +37,7 @@ default_args = {
 
 # Definir el DAG principal
 with DAG(
-    dag_id='ejemplo_subdags',
+    dag_id='subdag_basico',
     default_args=default_args,
     description='Un DAG de ejemplo que utiliza SubDagOperator',
     schedule_interval='@daily',
@@ -51,7 +51,7 @@ with DAG(
     # Crear un SubDagOperator para representar las subtareas
     subdag_tareas = SubDagOperator(
         task_id='subdag_tareas',
-        subdag=subdag('ejemplo_subdags', 'subdag_tareas', default_args),
+        subdag=subdag('subdag_basico', 'subdag_tareas', default_args),
     )
 
     final = DummyOperator(

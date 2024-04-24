@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 from random import uniform
 
 default_args = {
-    'owner': 'DSRP Class',
+    'owner': 'Docente',
     'depends_on_past': True,
     'start_date': datetime(2023,7,31),
     'retries': 3,

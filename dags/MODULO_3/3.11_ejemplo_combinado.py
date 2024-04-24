@@ -53,7 +53,7 @@ def cargar_datos_mysql(ti,tabla_destino):
 
 # Definir el DAG principal
 with DAG(
-    dag_id='Dag_EJEMPLO_MIXTO',
+    dag_id='ejemplo_combinado',
     default_args=default_args,
     description='Un DAG de ejemplo que combina taskgroup, xcom, sensor, triggerrules',
     schedule_interval='@daily',

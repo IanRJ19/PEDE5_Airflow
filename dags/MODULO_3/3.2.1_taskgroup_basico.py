@@ -12,7 +12,7 @@ default_args = {
 
 # Definir el DAG principal
 with DAG(
-    dag_id='ejemplo_taskgroup',
+    dag_id='taskgroup_basico',
     default_args=default_args,
     description='Un DAG de ejemplo que utiliza TaskGroup',
     schedule_interval='@daily',

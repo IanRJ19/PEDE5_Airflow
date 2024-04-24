@@ -11,14 +11,14 @@ from datetime import datetime, timedelta
 from pandas import json_normalize
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'Docente',
     'start_date': datetime(2024, 4, 8),
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
 }
 
 with DAG(
-    dag_id='importar_jugadores_futbol_ejemplo1',
+    dag_id='import_soccer_players',
     default_args=default_args,
     description='DAG para importar datos de jugadores de un equipo de fútbol desde una API a MySQL',
     schedule_interval='@daily',

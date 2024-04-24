@@ -9,7 +9,7 @@ from airflow.providers.mysql.hooks.mysql import MySqlHook
 
 # Argumentos por defecto para el DAG
 args_defecto = {
-    'owner': 'airflow',
+    'owner': 'Docente',
     'start_date': datetime.now() - timedelta(days=1),
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
@@ -45,7 +45,7 @@ def obtener_y_cargar_datos(api_url, table_name, file_name):
 
 # Definición del DAG
 with DAG(
-    dag_id='importar_datos_animales',
+    dag_id='import_dogs_cats',
     default_args=args_defecto,
     description='DAG para importar datos de animales desde APIs a MySQL',
     schedule_interval=timedelta(days=1),

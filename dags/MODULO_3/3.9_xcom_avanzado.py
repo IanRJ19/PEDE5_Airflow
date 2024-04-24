@@ -123,7 +123,7 @@ default_args = {
 
 # Definir el DAG principal
 with DAG(
-    dag_id='Dag_ETL_xcom',
+    dag_id='xcom_avanzado',
     default_args=default_args,
     description='Un DAG de ejemplo que utiliza xcoms',
     schedule_interval='@daily',

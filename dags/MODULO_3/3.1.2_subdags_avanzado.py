@@ -8,14 +8,14 @@ from datetime import datetime, timedelta
 
 
 default_args = {
-    'owner': 'DSRP Class',
+    'owner': 'Docente',
     'depends_on_past': True,
     'start_date': datetime(2023,7,31),
     'retries': 3,
     'retry_delay': timedelta(seconds=30)
 }
 
-with DAG(dag_id='subdags',
+with DAG(dag_id='subdags_avanzado',
             schedule='@daily',
             catchup=False,
             default_args=default_args,

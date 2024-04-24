@@ -4,7 +4,7 @@ from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'Docente',
     'depends_on_past': False,
     'start_date': datetime(2023, 1, 1),
     'email_on_failure': False,

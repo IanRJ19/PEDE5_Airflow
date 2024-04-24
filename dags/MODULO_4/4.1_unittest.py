@@ -6,7 +6,7 @@ def greet():
     print("Hello, Airflow!")
 
 default_args = {
-    'owner': 'airflow',
+    'owner': 'Docente',
     'start_date': datetime(2022, 1, 1)
 }
 
