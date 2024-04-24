@@ -13,7 +13,7 @@ default_args={
 }
 
 
-with DAG(dag_id="dag_scheduling_complex",
+with DAG(dag_id="dag_scheduling",
             start_date=datetime(2023, 7, 24),
             catchup=False,
             schedule_interval='*/5 * * * *',  # Se ejecuta cada 5 minutos

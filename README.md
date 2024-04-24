@@ -1,6 +1,5 @@
 # Curso de Apache Airflow 2 - PEDE3
 #### Docente: Ian Rumiche Juarez
-
 Recursos para el curso de Apache Airflow.
 
 ## Requisitos de PC
@@ -14,11 +13,11 @@ Recursos para el curso de Apache Airflow.
 
 ## Instalacion de Apache Airflow
 1. Crea una carpeta llamada **airflow-course** en el directorio de tu preferencia.
-2. Descar el archivo **[docker-compose](https://github.com/alonsomedo/apache-airflow-course/blob/master/docker-compose.yaml)** y copialo dentro del directorio.
-3. Descargar el archivo **[.env](https://github.com/alonsomedo/apache-airflow-course/blob/master/.env)** y copiarlo dentro del directorio.
-4. Abrir la carpeta desde Visual Studio Code
-5. Abrir la terminal. **Visual Studio Code -> Terminal -> Nueva Terminal**
-6. En la terminal ejecutar el siguiente comando: **` docker-compose up -d `**. Esperar entre 2 a 5 minutos.
+2. Clona el siguiente **[Repositorio](https://github.com/IanRJ19/PEDE3_Airflow.git)**
+3. Abrir la carpeta desde Visual Studio Code
+4. Abrir la terminal. **Visual Studio Code -> Terminal -> Nueva Terminal**
+5. En la terminal ejecutar el siguiente comando: **` docker-compose up -d `**
+6. Esperar entre 2 a 5 minutos.
 7. Abre tu navegador y dirigite a http://localhost:8080/
     - `Usuario:` airflow
     - `Clave:` airflow
