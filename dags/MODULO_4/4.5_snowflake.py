@@ -18,6 +18,7 @@ default_args = {
 dag = DAG(
     'snowflake_operations',
     default_args=default_args,
+    tags=["MODULO_4"],
     description='A DAG to interact with Snowflake',
     schedule_interval='@daily',  # Se ejecuta diariamente
     catchup=False  # No realizar ejecuciones pasadas si el start date es antiguo

@@ -16,6 +16,7 @@ default_args = {
 with DAG(
     dag_id='sensor_archivo',
     schedule_interval='@daily',
+    tags=["MODULO_3"],
     default_args=default_args,
     catchup=False
     

@@ -17,6 +17,7 @@ default_args = {
 dag = DAG(
     'scala_spark_job',
     default_args=default_args,
+    tags=["MODULO_4"],
     description='A DAG to run a Scala script using Spark',
     schedule_interval='@daily',  # Se ejecuta diariamente
     catchup=False  # No realizar ejecuciones pasadas si el start date es antiguo

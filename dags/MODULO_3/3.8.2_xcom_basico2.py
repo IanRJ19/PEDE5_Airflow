@@ -21,6 +21,7 @@ default_args = {
 with DAG(dag_id='xcom_basico2',
          schedule='@daily',
          catchup=False,
+         tags=["MODULO_3"],
          default_args=default_args
          ) as dag:
     

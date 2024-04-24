@@ -13,7 +13,8 @@ default_args = {
 dag = DAG(
     dag_id='ejemplo_unittest',
     default_args=default_args,
-    schedule_interval='@daily'
+    schedule_interval='@daily',
+    tags=["MODULO_4"]
 )
 
 greet_task = PythonOperator(

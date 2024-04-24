@@ -24,6 +24,7 @@ default_args = {
 dag = DAG(
     'minio_file_transfer',
     default_args=default_args,
+    tags=["MODULO_4"],
     description='A simple DAG to transfer files to and from MinIO',
     schedule_interval='@daily',  # Se ejecuta diariamente
     catchup=False  # No realizar ejecuciones pasadas si el start date es antiguo

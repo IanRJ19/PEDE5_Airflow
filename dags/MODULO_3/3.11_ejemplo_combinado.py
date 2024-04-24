@@ -74,7 +74,7 @@ with DAG(
         task_id='EXTRAER',
         python_callable=leer_archivos,
         provide_context=True,
-        op_kwargs={'ruta_directorio': 'dags/archivo_sensor/Modelo_base_consolidado.xlsx'}
+        op_kwargs={'ruta_directorio': 'dags/MODULO_3/archivo_sensor/Modelo_base_consolidado.xlsx'}
     )
 
 

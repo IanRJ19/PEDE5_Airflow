@@ -1,5 +1,5 @@
 
 op_kwargs:
-  ruta_directorio: 'dags/archivo_sensor/Modelo_base_consolidado.xlsx'
+  ruta_directorio: 'dags/MODULO_3/archivo_sensor/Modelo_base_consolidado.xlsx'
 extra:
   parametro: 10

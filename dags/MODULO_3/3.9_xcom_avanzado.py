@@ -137,7 +137,7 @@ with DAG(
         task_id='EXTRAER',
         python_callable=leer_archivos,
         provide_context=True,
-        op_kwargs={'ruta_directorio': 'dags/reto_bases_info', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
+        op_kwargs={'ruta_directorio': 'dags/EXTRA/reto_bases_info', 'nombres_archivos': ['Base_1.xlsx', 'Base_2.xlsx']}
     )
 
     with TaskGroup(group_id='TRANSFORMACION') as TRANSFORMACION:

@@ -23,6 +23,7 @@ def recibir_valor_siguiente(ti):
 with DAG('xcom_basico1',
          start_date=datetime(2024, 4, 10),
          schedule_interval='@daily',
+         tags=["MODULO_3"],
          catchup=False) as dag:
 
     tarea1 = PythonOperator(

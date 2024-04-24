@@ -17,6 +17,7 @@ default_args = {
 with DAG('dag_proceso_spark',
             default_args=default_args,
             description='Un DAG que ejecuta dos scripts de Spark para procesamiento de datos',
+            tags=["MODULO_4"],
             schedule_interval='0 1 * * *',  # Se ejecuta diariamente a la 1:00 AM
             catchup=False) as dag:
 

@@ -24,6 +24,7 @@ with DAG(
     dag_id='trigger_rules',
     schedule='@daily',
     catchup=False,
+    tags=["MODULO_3"],
     default_args=default_args
     ) as dag:
     
