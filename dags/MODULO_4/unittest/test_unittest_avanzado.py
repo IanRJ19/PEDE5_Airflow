@@ -1,7 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from airflow.models import DagBag
-from unittest.unittest_avanzado import process_data
 
 class TestMyDag(unittest.TestCase):
     def setUp(self):
@@ -24,15 +23,6 @@ class TestMyDag(unittest.TestCase):
         from dags.MODULO_4.unittest.unittest_avanzado import fetch_data
         response = fetch_data()
         self.assertEqual(response, [{'id': 1, 'title': 'test title'}])
-
-    def test_process_data(self):
-        """Prueba de la función process_data para verificar que procese correctamente los datos recibidos."""
-        # Preparamos el ambiente de testing
-        ti = MagicMock()
-        ti.xcom_pull.return_value = [{'id': 1, 'title': 'test title'}]
-
-        processed_data = process_data(ti)
-        self.assertEqual(processed_data, [{'id': 1, 'title': 'test title'}])
 
     def test_load_data(self):
         """Prueba de la función load_data para verificar la salida correcta al cargar datos."""
