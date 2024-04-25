@@ -35,12 +35,8 @@ general_config = get_config( 'general_config.yaml')
 default_args = get_config( 'general_config.yaml')['default_args']['dev']
 dag_caracteristicas= get_config( 'general_config.yaml')['dag_caracteristicas']['dev']
 
-
-
-
 # IMPORTANDO MARKDOWN
 doc_md = get_md( 'README.md')
-
 
 # Definir el DAG principal
 with DAG(
@@ -52,7 +48,8 @@ with DAG(
     max_active_runs= dag_caracteristicas['max_active_runs'],
     catchup=dag_caracteristicas['catchup'],
     max_active_tasks= dag_caracteristicas['max_active_tasks']   ,
-    description= dag_caracteristicas['description']
+    description= dag_caracteristicas['description'],
+    doc_md=doc_md
 
 ) as dag:
 

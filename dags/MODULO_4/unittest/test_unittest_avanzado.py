@@ -1,10 +1,11 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from airflow.models import DagBag
+from dags.MODULO_4.unittest import unittest_avanzado
 
 class TestMyDag(unittest.TestCase):
     def setUp(self):
-        self.dagbag = DagBag(dag_folder='airflow_project/dags/', include_examples=False)
+        self.dagbag = DagBag(dag_folder='dags/', include_examples=False)
         self.dag = self.dagbag.get_dag(dag_id='example_advanced_unittest')
 
     def test_dag_loaded(self):
@@ -13,7 +14,7 @@ class TestMyDag(unittest.TestCase):
         self.assertIsNotNone(self.dag)
         self.assertEquals(self.dag.dag_id, 'example_advanced_unittest')
 
-    @patch('airflow_project.dags.my_dag.requests.get')
+    @patch('unittest_avanzado.requests.get')
     def test_fetch_data(self, mock_get):
         """Prueba de la función fetch_data para asegurarse de que maneje la respuesta de la API correctamente."""
         mock_response = MagicMock(status_code=200)
