@@ -22,8 +22,8 @@ from airflow.utils.trigger_rule import TriggerRule
 from custom.operators.rowcount_to_slack import RowCountToSlackChannelOperator
 
 # Importing python functions
-from import_soccer_data_to_mysql.functions.get_soccer_team_players import get_soccer_team_players
-from import_soccer_data_to_mysql.functions.load_soccer_team_players import load_soccer_team_players
+from EXTRA.import_soccer_data_to_mysql.functions.get_soccer_team_players import get_soccer_team_players
+from EXTRA.import_soccer_data_to_mysql.functions.load_soccer_team_players import load_soccer_team_players
 
 # Declare configuration variables
 dag_file_name = os.path.basename(__file__).split('.')[0]

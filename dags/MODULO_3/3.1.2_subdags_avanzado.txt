@@ -2,8 +2,7 @@ from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.bash import BashOperator
 from airflow.operators.subdag import SubDagOperator
-from subdags.subdag_parallel import subdag_parallel
-
+from MODULO_3.subdags.subdag_parallel import subdag_parallel
 from datetime import datetime, timedelta
 
 

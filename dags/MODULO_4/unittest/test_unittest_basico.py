@@ -23,6 +23,8 @@ class TestHelloAirflowDAG(unittest.TestCase):
 
         # RESULTADO: SI ENCONTRARÁ TAREA
 
+
+
     def test_dependencies_of_greet_task(self):
         """Comprueba las dependencias de la tarea 'greet'"""
         dag = self.dagbag.get_dag(dag_id='ejemplo_unittest')

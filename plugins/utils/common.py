@@ -10,7 +10,7 @@ def yaml_to_dict(dag_file_name=None, config_filename=None):
     :return: dict
     """
     dir_name = path.dirname(__file__)
-    path_to_file = path.join(dir_name, "../../dags/", f"{dag_file_name}/{config_filename}")
+    path_to_file = path.join(dir_name, "../../dags/EXTRA/", f"{dag_file_name}/{config_filename}")
     with open(path_to_file) as file:
         config = yaml.safe_load(file)
     return config
@@ -31,7 +31,7 @@ def get_sql(dag_file_name, filename):
     :return: string with sql code
     """
     dir_name = os.path.dirname(__file__)
-    path_to_file = os.path.join(dir_name, "../../dags/", f"{dag_file_name}/sql/{filename}")
+    path_to_file = os.path.join(dir_name, "../../dags/EXTRA/", f"{dag_file_name}/sql/{filename}")
     with open(path_to_file, 'r') as file:
         return file.read()   
     
@@ -42,6 +42,6 @@ def get_md(dag_file_name, filename):
     :return: string with markdown code
     """
     dir_name = os.path.dirname(__file__)
-    path_to_file = os.path.join(dir_name, "../../dags/", f"{dag_file_name}/{filename}")
+    path_to_file = os.path.join(dir_name, "../../dags/EXTRA/", f"{dag_file_name}/{filename}")
     with open(path_to_file, 'r') as file:
         return file.read()

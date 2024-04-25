@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.providers.amazon.aws.transfers.local_to_s3 import LocalFilesystemToS3Operator
-from airflow.providers.amazon.aws.transfers.s3_to_local import S3ToLocalFilesystemOperator
 from airflow.providers.amazon.aws.hooks.s3 import S3Hook
+from airflow.providers.amazon.aws.transfers.s3_to_sql import S3ToSqlOperator
 
 # Función para obtener el conector a MinIO usando S3Hook
 def get_s3_hook():
@@ -30,29 +30,37 @@ dag = DAG(
     catchup=False  # No realizar ejecuciones pasadas si el start date es antiguo
 )
 
-# Operador para subir archivos desde el sistema local a MinIO
-upload_to_minio = LocalFilesystemToS3Operator(
-    task_id='upload_to_minio',
-    filename='/path/to/local/file',  # Ruta del archivo local
-    dest_key='s3_key',  # Llave bajo la cual se almacenará el archivo en MinIO
-    dest_bucket='my_bucket',  # Nombre del bucket en MinIO
-    replace=True,  # Sobrescribir el archivo si ya existe
-    aws_conn_id='my_minio_conn',  # ID de conexión configurado para MinIO
-    dag=dag,
-)
+
 
 # Operador para descargar archivos desde MinIO al sistema local
-download_from_minio = S3ToLocalFilesystemOperator(
+download_from_minio = LocalFilesystemToS3Operator(
     task_id='download_from_minio',
-    s3_key='s3_key',  # Llave del archivo en MinIO
-    local_path='/path/to/destination/file',  # Ruta destino en el sistema local
-    bucket_name='my_bucket',  # Nombre del bucket en MinIO
-    aws_conn_id='my_minio_conn',  # ID de conexión configurado para MinIO
-    dag=dag,
+    filename='/path/to/your/local/file',  
+    dest_key='s3_key',  
+    dest_bucket='my_bucket',  
+    aws_conn_id='aws_default', 
+    replace=False, 
+    dag=dag
+    # ID de conexión configurado para MinIO,
 )
 
+enviar_to_sql = S3ToSqlOperator(
+    task_id='enviar_to_sql',
+    schema=None ,
+    table='tabla' ,
+    s3_bucket='bucket' ,
+    s3_key='llave' ,
+    sql_conn_id='cadena_conexion' ,
+    aws_conn_id='aws_default' ,
+    parser='parser',
+    dag=dag
+)
+
+
+
+
 # Definir dependencias: primero subir archivo y luego descargarlo
-upload_to_minio >> download_from_minio
+download_from_minio >> enviar_to_sql
 
 
 

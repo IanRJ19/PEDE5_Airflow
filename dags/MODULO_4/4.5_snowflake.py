@@ -58,8 +58,6 @@ update_query = SnowflakeOperator(
 # Definir dependencias: primero seleccionar, luego insertar, finalmente actualizar
 select_query >> insert_query >> update_query
 
-
-
 #Explicación del Código
 
 #Configuración del DAG: Define un objeto DAG con argumentos que especifican el propietario, la política de dependencias, el manejo de fallos, y la configuración de reintentos.

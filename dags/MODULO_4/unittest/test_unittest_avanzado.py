@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from airflow.models import DagBag
-from airflow_project.dags.my_dag import process_data
+from unittest.unittest_avanzado import process_data
 
 class TestMyDag(unittest.TestCase):
     def setUp(self):
@@ -21,7 +21,7 @@ class TestMyDag(unittest.TestCase):
         mock_response.json.return_value = [{'id': 1, 'title': 'test title'}]
         mock_get.return_value = mock_response
 
-        from dags.MODULO_4.unittest_avanzado import fetch_data
+        from dags.MODULO_4.unittest.unittest_avanzado import fetch_data
         response = fetch_data()
         self.assertEqual(response, [{'id': 1, 'title': 'test title'}])
 
@@ -39,7 +39,7 @@ class TestMyDag(unittest.TestCase):
         ti = MagicMock()
         ti.xcom_pull.return_value = [{'id': 1, 'title': 'test title'}]
 
-        from dags.MODULO_4.unittest_avanzado import load_data
+        from dags.MODULO_4.unittest.unittest_avanzado import load_data
         with self.assertLogs(level='INFO') as log:
             load_data(ti)
             self.assertIn('Loading 1 records into the database...', log.output[0])

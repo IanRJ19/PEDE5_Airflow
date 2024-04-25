@@ -3,18 +3,15 @@ default_args:
     owner: 'Docente'
     start_date: '2024-04-30'
     retries: 1
-    execution_timeout: timedelta(seconds=500)
   staging:    
     owner: 'Inspector'
     start_date: '2024-04-22'
     retries: 1
-    execution_timeout: 'timedelta(seconds=300)'
 
   dev:
     owner: 'Desarrollador'
     start_date: '2024-04-22'
     retries: 5
-    execution_timeout: 'timedelta(seconds=150)'
 
 
 dag_caracteristicas:
