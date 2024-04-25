@@ -6,14 +6,14 @@ from airflow.sensors.external_task import ExternalTaskSensor
 from datetime import datetime, timedelta
 
 with DAG(dag_id='ets_slave',
-         start_date=datetime(2023,8,3,0,54),
-         schedule='*/2 * * * *',
-         catchup=True,
+         start_date=datetime(2024, 4, 24),
+         schedule='* * * * *',
+         catchup=False,
          tags=['external_task_sensor', 'slave']
          ) as dag:
     
     start = EmptyOperator(task_id='start')
-    end = EmptyOperator(task_id='end')
+ 
 
     extract = BashOperator(task_id='extract',
                            bash_command='sleep 4')
@@ -22,6 +22,8 @@ with DAG(dag_id='ets_slave',
                            bash_command='sleep 2')
     
     load = BashOperator(task_id='load',
-                           bash_command='sleep 40')
+                           bash_command='sleep 10')
     
+    end = EmptyOperator(task_id='end')
+
     start >> extract >> transform >> load >> end
