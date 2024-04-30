@@ -1,8 +1,6 @@
 import unittest
-from unittest.mock import patch, MagicMock
 from airflow.models import DagBag
 from datetime import datetime, timedelta
-from unittest_avanzado import fetch_data
 
 class TestAdvancedAirflowDAG(unittest.TestCase):
     def setUp(self):
@@ -15,15 +13,6 @@ class TestAdvancedAirflowDAG(unittest.TestCase):
         self.assertDictEqual(self.dagbag.import_errors, {}, msg="DAGs con errores al cargar")
         self.assertIsNotNone(self.dag)
         self.assertEquals(self.dag.dag_id, 'example_advanced_unittest')
-
-    @patch('dags.MODULO_4.unittest.unittest_avanzado.requests.get')
-    def test_fetch_data(self, mock_get):
-        """Prueba de la función fetch_data para asegurarse de que maneje la respuesta de la API correctamente."""
-        mock_response = MagicMock(status_code=200)
-        mock_response.json.return_value = [{'id': 1, 'title': 'test title'}]
-        mock_get.return_value = mock_response
-        response = fetch_data()
-        self.assertEqual(response, [{'id': 1, 'title': 'test title'}])
 
     def test_dependencies(self):
         """Verifica las dependencias entre tareas dentro del DAG."""

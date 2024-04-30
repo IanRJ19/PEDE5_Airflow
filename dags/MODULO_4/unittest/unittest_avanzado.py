@@ -3,12 +3,13 @@ from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
 import requests
 
-def fetch_data():
-    # Cambio a una URL de una API pública real
-    response = requests.get("https://jsonplaceholder.typicode.com/posts")
+def fetch_data(api_url="https://jsonplaceholder.typicode.com/posts"):
+    response = requests.get(api_url)
     if response.status_code != 200:
-        raise Exception("API request failed with status code: {}".format(response.status_code))
+        raise Exception(f"API request failed with status code: {response.status_code}")
     return response.json()
+
+
 
 def process_data(ti):
     raw_data = ti.xcom_pull(task_ids='fetch_data')
