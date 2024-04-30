@@ -1,39 +1,50 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from airflow.models import DagBag
-from dags.MODULO_4.unittest import unittest_avanzado
+from datetime import datetime, timedelta
+from unittest_avanzado import fetch_data
 
-class TestMyDag(unittest.TestCase):
+class TestAdvancedAirflowDAG(unittest.TestCase):
     def setUp(self):
+        # Establece la ubicación y configuración de los DAGs a cargar, excluyendo ejemplos
         self.dagbag = DagBag(dag_folder='dags/', include_examples=False)
         self.dag = self.dagbag.get_dag(dag_id='example_advanced_unittest')
 
     def test_dag_loaded(self):
-        """Verificar si el DAG se carga correctamente en DagBag."""
-        self.assertFalse(self.dagbag.import_errors)
+        """Verificar si el DAG se carga correctamente en DagBag y no hay errores."""
+        self.assertDictEqual(self.dagbag.import_errors, {}, msg="DAGs con errores al cargar")
         self.assertIsNotNone(self.dag)
         self.assertEquals(self.dag.dag_id, 'example_advanced_unittest')
 
-    @patch('unittest_avanzado.requests.get')
+    @patch('dags.MODULO_4.unittest.unittest_avanzado.requests.get')
     def test_fetch_data(self, mock_get):
         """Prueba de la función fetch_data para asegurarse de que maneje la respuesta de la API correctamente."""
         mock_response = MagicMock(status_code=200)
         mock_response.json.return_value = [{'id': 1, 'title': 'test title'}]
         mock_get.return_value = mock_response
-
-        from dags.MODULO_4.unittest.unittest_avanzado import fetch_data
         response = fetch_data()
         self.assertEqual(response, [{'id': 1, 'title': 'test title'}])
 
-    def test_load_data(self):
-        """Prueba de la función load_data para verificar la salida correcta al cargar datos."""
-        ti = MagicMock()
-        ti.xcom_pull.return_value = [{'id': 1, 'title': 'test title'}]
+    def test_dependencies(self):
+        """Verifica las dependencias entre tareas dentro del DAG."""
+        process_task = self.dag.get_task('process_data')
+        load_task = self.dag.get_task('load_data')
+        self.assertTrue(process_task in load_task.upstream_list)
+        self.assertTrue(load_task in process_task.downstream_list)
 
-        from dags.MODULO_4.unittest.unittest_avanzado import load_data
-        with self.assertLogs(level='INFO') as log:
-            load_data(ti)
-            self.assertIn('Loading 1 records into the database...', log.output[0])
+    def test_retry_policy(self):
+        """Verifica que la política de reintentos esté configurada correctamente."""
+        fetch_task = self.dag.get_task('fetch_data')
+        self.assertEqual(fetch_task.retries, 2)
+        self.assertEqual(fetch_task.retry_delay, timedelta(minutes=5))
+
+    def test_schedule_interval(self):
+        """Verifica que el intervalo de programación del DAG esté establecido correctamente."""
+        self.assertEqual(self.dag.schedule_interval, '@daily')
+
+    def test_catchup(self):
+        """Verifica que la propiedad 'catchup' del DAG sea False."""
+        self.assertFalse(self.dag.catchup)
 
 if __name__ == '__main__':
     unittest.main()
