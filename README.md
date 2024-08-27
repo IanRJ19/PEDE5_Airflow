@@ -1,4 +1,4 @@
-# Curso de Apache Airflow 2 - PEDE3
+# Curso de Apache Airflow  - PEDE5
 #### Docente: Ian Rumiche Juarez
 Recursos para el curso de Apache Airflow.
 
@@ -16,7 +16,7 @@ Recursos para el curso de Apache Airflow.
 2. Clona el siguiente **[Repositorio](https://github.com/IanRJ19/PEDE3_Airflow.git)**
 3. Abrir la carpeta desde Visual Studio Code
 4. Abrir la terminal. **Visual Studio Code -> Terminal -> Nueva Terminal**
-5. En la terminal ejecutar el siguiente comando: **` docker-compose up -d `**
+5. En la terminal ejecutar el siguiente comando: **` docker compose up -d `**
 6. Esperar entre 2 a 5 minutos.
 7. Abre tu navegador y dirigite a http://localhost:8080/
     - `Usuario:` airflow
@@ -24,6 +24,6 @@ Recursos para el curso de Apache Airflow.
 
 ## Eliminar Docker container, images y volumes
 Ejecutar los siguientes comandos en orden:
-1. Para eliminar docker containers: **` docker-compose down `**
+1. Para eliminar docker containers: **` docker compose down `**
 2. Para eliminar docker volumes: **` docker volume prune `**
 3. Para eliminar docker images: **` docker rmi -f $(docker images -aq) `**
