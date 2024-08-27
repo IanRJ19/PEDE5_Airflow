@@ -17,7 +17,7 @@ Recursos para el curso de Apache Airflow.
 3. Abrir la carpeta desde Visual Studio Code
 4. Abrir la terminal. **Visual Studio Code -> Terminal -> Nueva Terminal**
 5. En la terminal ejecutar el siguiente comando: **` docker compose up -d `**
-6. Esperar entre 2 a 5 minutos.
+6. Esperar entre 5 a 7 minutos a que los contenedores estén bien desplegados.
 7. Abre tu navegador y dirigite a http://localhost:8080/
     - `Usuario:` airflow
     - `Clave:` airflow
